@@ -887,6 +887,97 @@ The course admin shall be able to cancel the use case at any time prior to submi
 **Assumptions:**
 **Open Issues:**
 
+### **UC-SEC-remind-non-submitters: The instructor reminds the students who have not submitted a weekly activity report or peer evaluation**
+
+**UC ID and Name:** UC-SEC-remind-non-submitters: Remind the students who have not submitted a weekly activity report or peer evaluation
+**Created By:** Turner DeMott
+**Date Created:** 10/01/2026
+**Primary Actor:** instructor
+**Secondary Actors:** student
+**Trigger:** The instructor indicates to view the submission status of a course section.
+**Description:** The instructor wants to see which students in a course section they teach have not submitted the previous week's weekly activity report or peer evaluation, and to send a reminder to only those students, so that the students who are behind submit while they still can and the students who are done are not emailed. A course admin, who is also an instructor of their course, may perform this use case (BR-role-based-access).
+
+**Preconditions:**
+- PRE-1. The instructor is logged into the system.
+- PRE-2. The instructor is assigned to the course section, or is the course admin of the course it belongs to (BR-section-scoped-access).
+
+**Postconditions:**
+- POST-1. Each student who has not submitted a report the reminder covers has been sent one reminder email naming only their own unsubmitted report(s), and the system has recorded, for each report named, that they were reminded about it for that week. or
+- POST-2. No reminder was sent and nothing was recorded (the instructor only viewed the submission status, or no report was owed).
+
+**Main Success Scenario:**
+1. The instructor indicates to view the submission status of a course section.
+2. The system displays, for the previous week, every student in the course section who owes a weekly activity report or a peer evaluation for that week, and whether they have submitted each one (BR-submission-status). See the "Submission status" details in the Associated Information of this use case.
+3. The instructor indicates to remind the students who have not submitted.
+4. The system displays the students who will be reminded and, for each, the report(s) the reminder will name, leaving out any report they have already been reminded about for that week (BR-reminder-once-per-week), and asks the instructor to confirm.
+5. The instructor either confirms the reminder (continues the normal flow) or cancels it (see extension 5a).
+6. The system sends each listed student one reminder email naming only the report(s) they still have not submitted at the time of sending (BR-reminder-non-submitters-only), records the reminder for each report named, and informs the instructor how many students were reminded. See the "Reminder email" details in the Associated Information of this use case.
+7. Use case ends.
+
+**Extensions:**
+- **2a. The previous week is not one of the course section's active weeks:**
+  - 2a1. The system informs the instructor that no weekly activity report or peer evaluation is owed for that week (BR-submission-status, BR-active-weeks) and does not offer a reminder.
+  - 2a2. Use case ends.
+- **2b. A student in the course section is not assigned to a team:**
+  - 2b1. The system leaves them off the submission status, because they owe neither report (BR-submission-status, BR-team-assignment-required).
+  - 2b2. The use case continues at step 2 with the remaining students.
+- **2c. A student in the course section is deactivated:**
+  - 2c1. The system leaves them off the submission status, because they owe neither report (BR-submission-status, BR-student-lifecycle).
+  - 2c2. The use case continues at step 2 with the remaining students.
+- **2d. A student's weekly activity report for the previous week had an activity marked complete, and then they deleted every activity or marked each one in progress again:**
+  - 2d1. The system shows their weekly activity report for that week as not submitted (BR-submission-status).
+  - 2d2. The use case continues at step 2.
+- **2e. A student's weekly activity report for the previous week has activities, but none of them is marked complete:**
+  - 2e1. The system shows their weekly activity report for that week as not submitted (BR-submission-status).
+  - 2e2. The use case continues at step 2.
+- **2f. Every student who owes a report for the previous week has submitted it:**
+  - 2f1. The system informs the instructor that every owed report has been submitted and does not offer a reminder.
+  - 2f2. Use case ends.
+- **4a. Every unsubmitted report has already been reminded about for that week:**
+  - 4a1. The system informs the instructor that each student who has not submitted was already reminded, showing the date and time of each reminder, and that no further reminder for these reports may be sent for that week (BR-reminder-once-per-week).
+  - 4a2. Use case ends.
+- **5a. The instructor cancels the reminder:**
+  - 5a1. The system sends no email and records nothing.
+  - 5a2. Use case ends.
+- **6a. The submission window closed between step 2 and step 6** (the current week ended, so the week displayed is no longer the previous week, and its peer evaluation window has closed per BR-evaluation-submission-window):
+  - 6a1. The system sends no reminder, informs the instructor that the week they were viewing has ended, and records nothing.
+  - 6a2. The use case returns to step 2 for the new previous week.
+- **6b. A listed student submits a report the reminder would name between step 4 and step 6:**
+  - 6b1. The system leaves that report out of their reminder; if they have no unsubmitted report left, the system sends them no email (BR-reminder-non-submitters-only).
+  - 6b2. The use case continues at step 6 with the remaining students.
+- **6c. The mail server rejects the reminder email for a student:**
+  - 6c1. The system records no reminder for that student, so the rejected email does not count toward BR-reminder-once-per-week, and continues sending to the remaining students.
+  - 6c2. After the remaining students have been sent their reminders, the system informs the instructor which students could not be reminded.
+  - 6c3. The instructor may remind those students again by returning to step 3.
+- **6d. Another instructor or the course admin of the course section reminds a listed student about a report between step 4 and step 6:**
+  - 6d1. The system leaves that report out of this reminder, because the student has already been reminded about it for that week (BR-reminder-once-per-week); if no report is left to name, the system sends them no email.
+  - 6d2. After the remaining students have been sent their reminders, the system informs the instructor which students were already reminded by someone else, with the date and time of that reminder.
+  - 6d3. Use case ends.
+
+**Priority:** Medium
+**Frequency of Use:** Approximately 2-4 users, 1-2 usages per week.
+**Business Rules:** BR-section-scoped-access (the instructor sees and reminds only the students of the course sections they are assigned to or, as a course admin, owns), BR-role-based-access (a course admin may perform this use case), BR-submission-status, BR-reminder-non-submitters-only, BR-reminder-once-per-week, BR-team-assignment-required, BR-active-weeks, BR-evaluation-submission-window, BR-student-lifecycle
+
+**Associated Information:**
+
+Submission status:
+- The previous week is the Monday-to-Sunday week before the current week (see the Active Week definition in the project glossary). It is the week whose weekly activity report and peer evaluation are due during the current week.
+- The submission status lists one row per student who owes at least one report for the previous week (BR-submission-status), with: the student's name, their team, the status of their weekly activity report, the status of their peer evaluation, and the date and time they were reminded about each report for that week, if they were.
+- Each report's status is one of: Submitted, Not submitted.
+- The submission status shows only whether each report was submitted. It does not show activity content, hours, peer evaluation scores, or comments.
+- Submission status is determined at the moment it is displayed; it is not a stored snapshot.
+
+Reminder email:
+- Each reminder email is addressed to one student only and names only their own unsubmitted report(s), the week each covers, and the course section's due day and due time for each (BR-reminder-non-submitters-only).
+- The reminder is delivered through the Gmail SMTP integration (CI-email-notifications).
+- A reminder sent through this use case is separate from the weekly reminder the system sends on the course section's due day (FR-NOT-weekly-reminder); that weekly reminder does not count toward BR-reminder-once-per-week.
+
+The instructor shall be able to cancel the use case at any time prior to confirming the reminder.
+
+**Assumptions:**
+**Open Issues:**
+- FR-NOT-weekly-reminder states that the weekly reminder is sent to each student in the course section, which conflicts with BR-reminder-non-submitters-only. FR-NOT-weekly-reminder should be amended to cite BR-reminder-non-submitters-only; that change is outside the two files this use case modifies.
+
 ## **Team**
 
 ### **UC-TEA-find-teams: The course admin/instructor finds teams**
