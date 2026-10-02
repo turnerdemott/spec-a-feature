@@ -949,6 +949,10 @@ The course admin shall be able to cancel the use case at any time prior to submi
   - 6c1. The system records no reminder for that student, so the rejected email does not count toward BR-reminder-once-per-week, and continues sending to the remaining students.
   - 6c2. After the remaining students have been sent their reminders, the system informs the instructor which students could not be reminded.
   - 6c3. The instructor may remind those students again by returning to step 3.
+- **6d. Another instructor or the course admin of the course section reminds a listed student about a report between step 4 and step 6:**
+  - 6d1. The system leaves that report out of this reminder, because the student has already been reminded about it for that week (BR-reminder-once-per-week); if no report is left to name, the system sends them no email.
+  - 6d2. After the remaining students have been sent their reminders, the system informs the instructor which students were already reminded by someone else, with the date and time of that reminder.
+  - 6d3. Use case ends.
 
 **Priority:** Medium
 **Frequency of Use:** Approximately 2-4 users, 1-2 usages per week.
