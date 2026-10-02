@@ -958,7 +958,7 @@ The course admin shall be able to cancel the use case at any time prior to submi
 
 Submission status:
 - The previous week is the Monday-to-Sunday week before the current week (see the Active Week definition in the project glossary). It is the week whose weekly activity report and peer evaluation are due during the current week.
-- The submission status lists one row per student who owes at least one report for the previous week (BR-submission-status), with: the student's name, her team, the status of her weekly activity report, the status of her peer evaluation, and the date and time they were reminded about each report for that week, if they were.
+- The submission status lists one row per student who owes at least one report for the previous week (BR-submission-status), with: the student's name, their team, the status of their weekly activity report, the status of their peer evaluation, and the date and time they were reminded about each report for that week, if they were.
 - Each report's status is one of: Submitted, Not submitted.
 - The submission status shows only whether each report was submitted. It does not show activity content, hours, peer evaluation scores, or comments.
 - Submission status is determined at the moment it is displayed; it is not a stored snapshot.
